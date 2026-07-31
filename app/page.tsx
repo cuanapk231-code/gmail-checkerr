@@ -9,33 +9,44 @@ export default function Home() {
   const handleCheck = async () => {
     setLoading(true)
     setResults([])
-    const res = await fetch('/api/check-bulk', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ emails })
-    })
-    const data = await res.json()
-    setResults(data.results)
+    try {
+      const res = await fetch('/api/check-bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emails })
+      })
+      const data = await res.json()
+      setResults(data.results)
+    } catch (e) {
+      alert('Gagal cek email')
+    }
     setLoading(false)
   }
 
   return (
-    <main style={{padding: 20, maxWidth: 700, margin: 'auto'}}>
+    <main style={{padding: 20, maxWidth: 700, margin: 'auto', fontFamily: 'sans-serif'}}>
       <h1>Gmail Bulk Checker</h1>
       <textarea 
         value={emails}
         onChange={(e) => setEmails(e.target.value)}
         placeholder="Tempel email di sini, 1 baris 1 email"
         rows={10}
-        style={{width: '100%'}}
+        style={{width: '100%', padding: 10}}
       />
-      <button onClick={handleCheck} disabled={loading}>
+      <button onClick={handleCheck} disabled={loading} style={{marginTop: 10, padding: '10px 20px'}}>
         {loading? 'Mengecek...' : 'Cek Email'}
       </button>
       
-      {results.map((r, i) => (
-        <p key={i}>{r.email} : <b>{r.status}</b></p>
-      ))}
+      {results.length > 0 && (
+        <div style={{marginTop: 20}}>
+          <h3>Hasil:</h3>
+          {results.map((r, i) => (
+            <p key={i} style={{color: r.status.includes('Live')? 'green' : 'red'}}>
+              {r.email} : <b>{r.status}</b>
+            </p>
+          ))}
+        </div>
+      )}
     </main>
   )
-}
+      }
