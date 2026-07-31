@@ -1,26 +1,19 @@
-import { NextResponse } from 'next/server'
-
-export async function POST(req: Request) {
-  const { emails } = await req.json()
-  const emailList = emails.split('\n').filter((e: string) => e.trim())
-  
-  const results = emailList.map(email => {
-    email = email.trim()
-    // 1. Cek format dasar
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return { email, status: 'Invalid Format' }
-    }
+export async function POST(req) {
+  try {
+    const { emails } = await req.json()
+    const emailList = emails.split('\n').filter(e => e.trim())
     
-    // 2. Cek domain
-    const domain = email.split('@')[1].toLowerCase()
+    const results = emailList.map(email => {
+      email = email.trim()
+      if (email.includes('@gmail.com')) {
+        return { email, status: 'Mungkin Live' }
+      } else {
+        return { email, status: 'Bukan Gmail' }
+      }
+    })
     
-    if (domain === 'gmail.com' || domain === 'yahoo.com' || domain === 'outlook.com') {
-      return { email, status: 'Mungkin Live' }
-    } else {
-      return { email, status: 'Domain Tidak Dikenal' }
-    }
-  })
-  
-  return NextResponse.json({ results })
+    return Response.json({ results })
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 })
+  }
 }
