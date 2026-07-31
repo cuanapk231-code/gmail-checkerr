@@ -10,7 +10,7 @@ export default function Home() {
     setLoading(true)
     setResults([])
     try {
-      const res = await fetch('/api/check-bulk', {
+      const res = await fetch('https://gmail-checkerr-gl9z.vercel.app/api/check-bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emails })
@@ -31,22 +31,6 @@ export default function Home() {
         onChange={(e) => setEmails(e.target.value)}
         placeholder="Tempel email di sini, 1 baris 1 email"
         rows={10}
-        style={{width: '100%', padding: 10}}
+        style={{width: '100%', padding: 10, fontSize: 16}}
       />
-      <button onClick={handleCheck} disabled={loading} style={{marginTop: 10, padding: '10px 20px'}}>
-        {loading? 'Mengecek...' : 'Cek Email'}
-      </button>
-      
-      {results.length > 0 && (
-        <div style={{marginTop: 20}}>
-          <h3>Hasil:</h3>
-          {results.map((r, i) => (
-            <p key={i} style={{color: r.status.includes('Live')? 'green' : 'red'}}>
-              {r.email} : <b>{r.status}</b>
-            </p>
-          ))}
-        </div>
-      )}
-    </main>
-  )
-      }
+      <button onClick={handleCheck} disabled={loading} style={{marginTop: 10, padding: '
