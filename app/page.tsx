@@ -4,20 +4,23 @@ import { useState } from 'react'
 export default function Home() {
   const [emails, setEmails] = useState('')
   const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState('')
+  const [results, setResults] = useState<any[]>([])
 
   const handleCheck = async () => {
     setLoading(true)
-    setResult('Mengecek...')
-    // ini contoh doang, nanti ganti sama API beneran
-    setTimeout(() => {
-      setResult(`Selesai cek ${emails.split('\n').length} email`)
-      setLoading(false)
-    }, 2000)
+    setResults([])
+    const res = await fetch('/api/check-bulk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emails })
+    })
+    const data = await res.json()
+    setResults(data.results)
+    setLoading(false)
   }
 
   return (
-    <main style={{padding: 20}}>
+    <main style={{padding: 20, maxWidth: 700, margin: 'auto'}}>
       <h1>Gmail Bulk Checker</h1>
       <textarea 
         value={emails}
@@ -27,9 +30,12 @@ export default function Home() {
         style={{width: '100%'}}
       />
       <button onClick={handleCheck} disabled={loading}>
-        {loading ? 'Loading...' : 'Cek Email'}
+        {loading? 'Mengecek...' : 'Cek Email'}
       </button>
-      <p>{result}</p>
+      
+      {results.map((r, i) => (
+        <p key={i}>{r.email} : <b>{r.status}</b></p>
+      ))}
     </main>
   )
-    }
+}
