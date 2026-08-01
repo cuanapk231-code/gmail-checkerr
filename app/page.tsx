@@ -21,7 +21,7 @@ export default function Home() {
       alert('Gagal cek email')
     }
     setLoading(false)
-  }
+  } // <-- ini kurung tutup yang tadi ketinggalan
 
   return (
     <main style={{padding: 20, maxWidth: 700, margin: 'auto', fontFamily: 'sans-serif'}}>
@@ -33,4 +33,20 @@ export default function Home() {
         rows={10}
         style={{width: '100%', padding: 10, fontSize: 16}}
       />
-      <button onClick={handleCheck} disabled={loading} style={{marginTop: 10, padding: '
+      <button onClick={handleCheck} disabled={loading} style={{marginTop: 10, padding: '10px 20px', fontSize: 16}}>
+        {loading? 'Mengecek...' : 'Cek Email'}
+      </button>
+      
+      {results.length > 0 && (
+        <div style={{marginTop: 20}}>
+          <h3>Hasil:</h3>
+          {results.map((r, i) => (
+            <p key={i} style={{color: r.status.includes('Live')? 'green' : 'red', margin: 5}}>
+              {r.email} : <b>{r.status}</b>
+            </p>
+          ))}
+        </div>
+      )}
+    </main>
+  )
+}
